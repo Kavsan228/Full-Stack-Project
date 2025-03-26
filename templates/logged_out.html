@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Logged Out{% endblock %}
+
+{% block content %}
+<h1>You have been logged out</h1>
+<p>You have successfully logged out. Click the button below to sign in again.</p>
+<button onclick="window.location.href = '{% url 'login' %}'">
+    <i class="fa-solid fa-circle-user"></i> Log In
+</button>
+{% endblock %}

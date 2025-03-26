@@ -1,0 +1,12 @@
+{% load static %}
+{% for product in products %}
+    <div class="product-item">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100px; height: auto;">
+        <h3>{{ product.name }}</h3>
+        <p>Price: ${{ product.price|floatformat:2 }}</p>
+        <form class="cart-form" action="{% url 'remove_product_from_cart' product.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit">Remove</button>
+        </form>
+    </div>
+{% endfor %}

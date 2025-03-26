@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2>Welcome back!</h2>
+
+    <form method="post" id="login-form" aria-labelledby="login-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="options">
+            <label>
+                <input type="checkbox" id="remember-me"> Remember me
+            </label>
+        </div>
+
+        <button type="submit" class="btn">Log in</button>
+
+        <p class="signup-link">Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
+    </form>
+</div>
+{% endblock %}

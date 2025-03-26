@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Site{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script defer src="{% static 'js/script.js' %}"></script>
+    <script src="https://kit.fontawesome.com/38535c847d.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">EpiCult</div>
+        <nav>
+            <button onclick="window.location.href = '{% url 'index' %}'" class="nav-button">
+                <i class="fa-solid fa-house"></i> Home
+            </button>
+            {% if user.is_authenticated %}
+                <button onclick="window.location.href = '{% url 'account' %}'" class="nav-button">
+                    <i class="fa-solid fa-receipt"></i> Account
+                </button>
+                <button onclick="window.location.href = '{% url 'order_history' %}'" class="nav-button">
+                    <i class="fa-solid fa-history"></i> Order History
+                </button>
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-button">
+                        <i class="fa-solid fa-sign-out-alt"></i> Sign Out
+                    </button>
+                </form>
+            {% else %}
+                <button onclick="window.location.href = '{% url 'login' %}'" class="nav-button">
+                    <i class="fa-solid fa-circle-user"></i> Log In
+                </button>
+                <button onclick="window.location.href = '{% url 'signup' %}'" class="nav-button">
+                    <i class="fa-solid fa-user-plus"></i> Sign Up
+                </button>
+            {% endif %}
+            <button onclick="window.location.href = '{% url 'forgot_password' %}'" class="nav-button">
+                <i class="fa-solid fa-question-circle"></i> Forgot Password
+            </button>
+            <button onclick="window.location.href = '{% url 'view_cart' %}'" class="nav-button">
+                <i class="fa-solid fa-shopping-cart"></i> Cart
+            </button>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <section class="legal-notice">
+            <p>&copy; 2025 Epicult. All Rights Reserved.</p>
+            <p>Terms of Service | Privacy Policy</p>
+        </section>
+        <section class="company-info">
+            <p><strong>Company Address:</strong></p>
+            <p>43 Alexander Kazbegi Ave, Suite 3, Tbilisi, 18031</p>
+            <p><strong>Contact Us:</strong></p>
+            <p>Email: support@epicult.com</p>
+            <p>Phone: +995 599 721 127</p>
+            <img id="elogo" src="{% static 'images/advert/epicult_logo.webp' %}" alt="EpiCult Logo">
+        </section>
+    </footer>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

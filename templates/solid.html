@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Solid Body{% endblock %}
+
+{% block content %}
+<h2>Solid Body</h2>
+<section class="product-grid">
+    {% for product in products %}
+    <div class="product">
+        <img src="{% static product.image %}" alt="{{ product.name }}">
+        <h3>{{ product.name }}</h3>
+        <p>Price: ${{ product.price }}</p>
+        <form action="{% url 'add_to_cart' product.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Add to Cart</button>
+        </form>
+    </div>
+    {% endfor %}
+</section>
+{% endblock %}

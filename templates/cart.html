@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+{% load product_filters %}
+{% block title %}Cart{% endblock %}
+
+{% block content %}
+<h1>Your Cart</h1>
+{% if cart_items %}
+    <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: Arial, sans-serif; border: 1px solid #ddd;">
+        <thead style="background-color: #f4f4f4;">
+            <tr>
+                <th style="padding: 12px; border: 1px solid #ddd;">Image</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Product Name</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Price</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Quantity</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Total</th>
+                <th style="padding: 12px; border: 1px solid #ddd;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr>
+                <td style="padding: 12px; border: 1px solid #ddd;">
+                    <img src="{% static item.product.image %}" alt="{{ item.product.name }}" style="width: 100px; height: auto;">
+                </td>
+                <td style="padding: 12px; border: 1px solid #ddd;">{{ item.product.name }}</td>
+                <td style="padding: 12px; border: 1px solid #ddd;">${{ item.product.price }}</td>
+                <td style="padding: 12px; border: 1px solid #ddd;">{{ item.quantity }}</td>
+                <td style="padding: 12px; border: 1px solid #ddd;">${{ item.total_price }}</td>
+                <td style="padding: 12px; border: 1px solid #ddd;">
+                    <a href="{% url 'add_to_cart' item.product.id %}" class="btn btn-primary">Add More</a>
+                    <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-danger">Remove</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h3>Total Price: ${{ total_price }}</h3>
+    <a href="{% url 'checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+    <form action="{% url 'empty_cart' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Empty Cart</button>
+    </form>
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('.cart-form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrftoken,
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the cart content
+                    document.querySelector('.product-grid').innerHTML = data.cart_html;
+                    document.querySelector('p.total-price').innerHTML = `Total: $${data.total_price}`;
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

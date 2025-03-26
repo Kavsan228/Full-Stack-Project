@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Storefront{% endblock %}
+
+{% block content %}
+<!-- First Row: Hero Image -->
+<section class="hero">
+    <img src="{% static 'images/advert/eppiphone.jpg' %}" alt="Hero Image" class="hero-image">
+</section>
+
+<!-- Second Row: Navigation Buttons -->
+<section class="navigation-buttons">
+    <button class="nav-button classic-button" onclick="window.location.href = '{% url 'acoustics' %}'">Acoustics</button>
+    <button class="nav-button classic-button" onclick="window.location.href = '{% url 'solid' %}'">Solid Body</button>
+    <button class="nav-button classic-button" onclick="window.location.href = '{% url 'hollow' %}'">Hollow Body</button>
+</section>
+
+<!-- Third Row: Product Grid -->
+<section class="product-grid">
+    {% for product in products %}
+    <div class="product">
+        {% load static %}
+        <img src="{% static product.image %}" alt="{{ product.name }}" style="width: 100px; height: auto;">
+        <h3>{{ product.name }}</h3>
+        <p>Price: ${{ product.price }}</p>
+        <form action="{% url 'add_to_cart' product.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Add to Cart</button>
+        </form>
+    </div>
+    {% endfor %}
+</section>
+{% endblock %}
